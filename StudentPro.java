@@ -1,19 +1,34 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.io.FileWriter;
+import java.io.File;  // Import the File class
+import java.io.FileNotFoundException;  // Import this class to handle errors
+import java.util.Scanner;
 
 public class StudentPro{
+    
     public static void main(String[] args) {
-       new StudentFrame();
+        StudentFrame s1 = new StudentFrame();
+       String record1 = s1.mainstr;
+       
+       
     }
 }
 class StudentFrame{
+    static String lname,fname,email,rid,gender,skills,lastword;
+    String data;
+    String sdata="student details";
     JFrame f1;
     JTabbedPane tb;
-    JComboBox gender;
+    JComboBox genderc;
     JButton formsubmit;
     JButton refress;
     JButton login;
     JButton search;
+    String mainstr;
+    
     StudentFrame(){
         f1 = new JFrame("Student details check");
         f1.setLayout(null);
@@ -27,7 +42,7 @@ class StudentFrame{
         JPanel p3 = new JPanel();
         p3.setLayout(null);
         //layout 
-        p1.setBackground(new Color(255, 255, 200));
+        p1.setBackground(new Color(255, 255, 204));
         p2.setBackground(new Color(204, 229, 255));
         p3.setBackground(new Color(204, 255, 255));
         //LABELS
@@ -64,7 +79,7 @@ class StudentFrame{
         regfield.setBounds(180,130,200,30);
         p1.add(regfield);
         
-        //REGID LABEL
+        //EMAIL LABEL
         JLabel emaillabel = new JLabel("EMAIL:");
         emaillabel.setFont(new Font("Verdana", Font.BOLD, 20));
         emaillabel.setBounds(20,140,200,90);
@@ -82,9 +97,9 @@ class StudentFrame{
         p1.add(genderlabel);
 
         String colors[] = {"male","female","other"};
-        gender  = new JComboBox(colors);
-        gender.setBounds(180,210,90,20);
-        p1.add(gender);
+        genderc  = new JComboBox(colors);
+        genderc.setBounds(180,210,90,20);
+        p1.add(genderc);
         //ADDRESS LABEL
         JLabel addresslabel = new JLabel("ADDRESS:",JLabel.LEFT);
         addresslabel.setFont(new Font("Verdana", Font.BOLD, 20));
@@ -122,8 +137,12 @@ class StudentFrame{
         formsubmit = new JButton("submit");
         formsubmit.setBounds(30,470,150,30);
         p1.add(formsubmit);
-        formsubmit.setBackground(Color.cyan);
+        formsubmit.setBackground(new Color(0,204,0));
         formsubmit.setOpaque(true);
+
+
+
+
         //REFRESS BUTTON
         refress = new JButton("refress");
         refress.setBounds(200,470,150,30);
@@ -133,7 +152,7 @@ class StudentFrame{
 
         //PANEL2 SECTION
         //NAME LABEL
-        JLabel namelabel2 = new JLabel("Email Id:",JLabel.LEFT);
+        JLabel namelabel2 = new JLabel("Registration Id:",JLabel.LEFT);
         namelabel2.setFont(new Font("Verdana", Font.BOLD, 17));
         namelabel2.setBounds(130,70,200,90);
         p2.add(namelabel2);
@@ -161,17 +180,17 @@ class StudentFrame{
         login.setBackground(Color.cyan);
         login.setOpaque(true);
 
-        //PANEL2 SECTION
+        //PANEL3 SECTION
         //NAME LABEL
-        JLabel namelabel3 = new JLabel("Name:",JLabel.LEFT);
+        JLabel namelabel3 = new JLabel("RollID:",JLabel.LEFT);
         namelabel3.setFont(new Font("Verdana", Font.BOLD, 17));
         namelabel3.setBounds(80,140,200,90);
         p3.add(namelabel3);
 
-        JTextField namefield3 = new JTextField("enter your email");
-        namefield3.setFont(new Font("Verdana", Font.BOLD, 10));
-        namefield3.setBounds(160,170,280,30);
-        p3.add(namefield3);
+        JTextField namefield33 = new JTextField("enter your id");
+        namefield33.setFont(new Font("Verdana", Font.BOLD, 10));
+        namefield33.setBounds(160,170,280,30);
+        p3.add(namefield33);
 
         //SEARCH BUTTON
         search = new JButton("search");
@@ -184,10 +203,102 @@ class StudentFrame{
         namelabel4.setFont(new Font("Verdana", Font.BOLD, 15));
         namelabel4.setBounds(160,200,200,90);
         p3.add(namelabel4);
+        
+
+      
+        
+        formsubmit.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                
+                String name = namefield.getText();
+                String lname = lastfield.getText();
+                String rid = regfield.getText();
+                String email = emailfield.getText(); 
+                Object gender = genderc.getSelectedItem();
+                String address = addressfield.getText();
+                String skills = skillsfield.getText();
+                String pwdword = pwdfield.getText();
+                
+               mainstr = name +","+lname+","+rid+","+email+","+gender+","+address+","+skills+","+pwdword;
+               //System.out.println(mainstr);
+               try{    
+                FileWriter fw=new FileWriter("C:\\Users\\gowth\\OneDrive\\Desktop\\"+rid+".txt"); 
+                JOptionPane.showMessageDialog(p2, "your details submitted","success", JOptionPane.INFORMATION_MESSAGE);
+                fw.write(mainstr);    
+                fw.close();    
+               }catch(Exception ae){System.out.println(ae);} 
+               System.out.println(mainstr+"Success...");    
+
+            }
+        });
+
+        
+      
+        login.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                String id = namefield2.getText();
+                try {
+                    File myObj = new File("C:\\Users\\gowth\\OneDrive\\Desktop\\"+id+".txt"); 
+                    Scanner myReader = new Scanner(myObj);
+                    while (myReader.hasNextLine()) {
+                      data = myReader.nextLine();
+                      String[] res = data.split("[,]", 0);
+                      String gid = res[2];
+                      System.out.println(gid);
+                      String gpassword = res[res.length-1];
+                      System.out.println(gpassword);
+                      if(gid.equals(namefield2.getText()) && gpassword.equals(lastfield2.getText())){
+                        JOptionPane.showMessageDialog(p2, "your login successful","success", JOptionPane.INFORMATION_MESSAGE);
+                      }
+                      else{
+                        JOptionPane.showMessageDialog(p2, "password incorrect","error", JOptionPane.ERROR_MESSAGE);
+                      }
+                    }
+                    myReader.close();
+                  } catch (FileNotFoundException fe) {
+                    System.out.println("file is not exist");
+                    fe.printStackTrace();
+                  }
+                  
+
+            }
+        });
 
 
+       
+        search.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                String id3 = namefield33.getText();
+                File f = new File("C:\\Users\\gowth\\OneDrive\\Desktop\\"+id3+".txt");
+                System.out.println(f);
+                if (f.exists()){
+                    try (Scanner myReader1 = new Scanner(f)) {
+                        while (myReader1.hasNextLine()) {
+                          sdata = myReader1.nextLine();
+                          
+                        }
+                        
+                    } catch (FileNotFoundException e1) {
+                        e1.printStackTrace();
+                    }
+                    
+                    
+                    JOptionPane.showMessageDialog(p3, "your data found","success", JOptionPane.INFORMATION_MESSAGE);
+                }   
+                else
+                    JOptionPane.showMessageDialog(p3, "your data doesnt exist","error", JOptionPane.ERROR_MESSAGE);
 
-
+            }
+        });
+        System.out.println(sdata);
+        JLabel namelabel5 = new JLabel(sdata,JLabel.LEFT);
+        namelabel5.setFont(new Font("Verdana", Font.BOLD, 15));
+        namelabel5.setBounds(260,400,200,90);
+        p3.add(namelabel5);
+  
         //JTABPANE BOUNDS
         tb.setBounds(20,20,900,700);
         tb.add("REGISTRATION",p1);
